@@ -20,7 +20,7 @@ insmod ./datapath/linux/vport-geneve.ko
 /etc/init.d/openvswitch-switch start
 
 
-git clone https://github.com/shettyg/ovn-docker.git
+git clone https://github.com/portdirect/ovn-docker.git
 cd ovn-docker
 cp * /usr/local/bin/
 
