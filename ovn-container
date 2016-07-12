@@ -23,7 +23,7 @@ import os
 import uuid
 from neutronclient.v2_0 import client
 from neutronclient.shell import NeutronShell
-from oslo.utils import encodeutils
+from oslo_utils import encodeutils
 
 USERNAME = ""
 PASSWORD = ""
