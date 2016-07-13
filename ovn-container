@@ -107,15 +107,26 @@ def sanity_check():
         AUTH_STRATEGY = "keystone"
 
     if mode == "overlay":
-        AUTH_STRATEGY = "noauth"
         endpoint_ip = ovs_vsctl("get Open_vSwitch . "
                                 "external_ids:ipam").strip('"')
         if not endpoint_ip:
             sys.exit("ipam server's ip address not set")
         ENDPOINT_URL = "http://%s:9696/" % (endpoint_ip)
         os.environ['OS_URL'] = ENDPOINT_URL
-        os.environ['OS_AUTH_STRATEGY'] = "noauth"
-
+        os.environ['OS_AUTH_STRATEGY'] = "keystone"
+        USERNAME = os.environ.get('OS_USERNAME', '')
+        if not USERNAME:
+            sys.exit("env OS_USERNAME not set")
+        PASSWORD = os.environ.get('OS_PASSWORD', '')
+        if not PASSWORD:
+            sys.exit("env OS_PASSWORD not set")
+        TENANT_ID = os.environ.get('OS_TENANT_ID', '')
+        if not TENANT_ID:
+            sys.exit("env OS_TENANT_ID not set")
+        AUTH_URL = os.environ.get('OS_AUTH_URL', '')
+        if not AUTH_URL:
+            sys.exit("env OS_AUTH_URL not set")
+        AUTH_STRATEGY = "keystone"
 
 def init(args):
     br_list = ovs_vsctl("list-br").split()
