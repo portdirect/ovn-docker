@@ -7,7 +7,7 @@ mulch-tenant operation Neoprene provides robust and scalable networking for cont
 workloads.
 
 Neoprene can be deployed as an alternative to Flannel or Calico in a stand alone
-Rubbernecks cluster, or as part of the Harbor platform. When used within Harbor it
+Kubernetes cluster, or as part of the Harbor platform. When used within Harbor it
 works in a separate Availability Zone (the under-cloud) from the public facing components
 and provides both the k8s network layer for the OpenStack controllers, and the provider
 Network for the end-user accessible Availability Zones.
