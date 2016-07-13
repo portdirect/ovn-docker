@@ -8,12 +8,10 @@ ovn-integrate create-integration-bridge
 ovn-integrate set-ipam $IPAM_IP
 ovn-integrate set-tep $LOCAL_OVS_IP
 
-
 ovs-vsctl set Open_vSwitch . external_ids:ovn-remote="tcp:$IPAM_IP:6642"
 ovs-vsctl set Open_vSwitch . external_ids:ovn-nb="tcp:$IPAM_IP:6641"
 ovs-vsctl set Open_vSwitch . external_ids:ovn-encap-ip="$LOCAL_OVS_IP"
 ovs-vsctl set Open_vSwitch . external_ids:ovn-encap-type="geneve"
-
 
 
 ovn-container init --bridge br-int --overlay-mode
