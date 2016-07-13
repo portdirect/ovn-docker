@@ -4,6 +4,7 @@ docker run -d \
 --name ipam \
 -e EXPOSED_IP=${OVN_IP} \
 -p ${OVN_IP}:5000:5000 \
+-p ${OVN_IP}:35357:35357 \
 -p ${OVN_IP}:9696:9696 \
 -p ${OVN_IP}:6641:6641 \
 -p ${OVN_IP}:6642:6642 \
