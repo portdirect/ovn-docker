@@ -12,9 +12,15 @@ cd ovs
 #git checkout -b ovn_local 767944131928487497579fd48
 ./boot.sh
 ./configure --prefix=/usr --localstatedir=/var  --sysconfdir=/etc --enable-ssl --with-linux=/lib/modules/`uname -r`/build
-make -j3 
+make -j3
 make install
 cp debian/openvswitch-switch.init /etc/init.d/openvswitch-switch
+
+rmmod openvswitch
+modprobe libcrc32c
+modprobe nf_conntrack_ipv6
+modprobe nf_nat_ipv6
+modprobe gre
 insmod ./datapath/linux/openvswitch.ko
 insmod ./datapath/linux/vport-geneve.ko
 /etc/init.d/openvswitch-switch start
