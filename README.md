@@ -4,7 +4,7 @@
 
 Neoprene can create a logical network between Kubernetes pods and docker containers 
 running on multiple hosts, using OVN to provide the underlying fabric. Capable of
-mulch-tenant operation Neoprene provides robust and scalable networking for container
+multi-tenant operation Neoprene provides robust and scalable networking for container
 workloads.
 
 Neoprene can be deployed as an alternative to Flannel or Calico in a stand alone
