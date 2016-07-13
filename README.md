@@ -1,33 +1,19 @@
-Docker drivers for OVN are now part of the Open vSwitch repository. So
-you don't need to look at this repository for Docker and OVN related things.
-
-Please read https://github.com/openvswitch/ovs/blob/master/INSTALL.Docker.md
-for all the details.
-
-Integration of OVN with Docker Containers.
+Neoprene: an OVN based K8s/Neutron network fabric
 -----------------------------------------
 
-OVN provides network virtualization to containers.  OVN's integration with
-containers works in two modes - the "underlay" mode or the "overlay" mode.
+Neoprene can create a logical network between Kubernetes pods and docker containers 
+running on multiple hosts, using OVN to provide the underlying fabric. Capable of
+mulch-tenant operation Neoprene provides robust and scalable networking for container
+workloads.
 
-In the "underlay" mode, OVN requires a OpenStack setup to provide container
-networking. In this mode, one can create logical networks and can have
-containers running inside VMs, VMs and physical machines connected to the
-same logical network.  This is a multi-tenant, multi-host solution.
+Neoprene can be deployed as an alternative to Flannel or Calico in a stand alone
+Rubbernecks cluster, or as part of the Harbor platform. When used within Harbor it
+works in a separate Availability Zone (the under-cloud) from the public facing components
+and provides both the k8s network layer for the OpenStack controllers, and the provider
+Network for the end-user accessible Availability Zones.
 
-In the "overlay" mode, OVN can create a logical network amongst containers
-running on multiple hosts. This is a single-tenant (extendable to multi-tenants
-depending on the security characteristics of the workloads), multi-host
-solution. In this mode, you do not need a pre-created OpenStack setup.
-
-For both the modes to work, a user has to install Open vSwitch in each VM/host
-that he plans to run his containers.
-
-For integration of OVN with Docker's libnetwork, read [INSTALL.Docker.md]
-
-For backend tools that works independently of Docker's libnetwork, read
-[backend.md]
-
-[INSTALL.Docker.md]: docs/INSTALL.Docker.md
-[backend.md]: docs/backend.md
-
+This project is heavily based on the work of shettyg (https://github.com/shettyg/ovn-docker),
+and is a fast moving target at the moment, but will aim to remain small and simple, focused on
+providing effient globaliy distributed L2 networks and DVR functionality. Eventually Keystone
+Federation, and a VPN layer (most likley either IPsec or WireGuard) will be incorporated to
+improve deployment flexibility.
