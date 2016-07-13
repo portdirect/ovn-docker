@@ -9,7 +9,7 @@ apt-get install -y build-essential fakeroot debhelper \
 
 git clone https://github.com/openvswitch/ovs.git
 cd ovs
-git checkout -b ovn_local 767944131928487497579fd48
+#git checkout -b ovn_local 767944131928487497579fd48
 ./boot.sh
 ./configure --prefix=/usr --localstatedir=/var  --sysconfdir=/etc --enable-ssl --with-linux=/lib/modules/`uname -r`/build
 make -j3 
