@@ -1,1 +1,1 @@
-docker run -d --net=host --name ipam openvswitch/ipam:v2.4.90 /sbin/ipam
+docker run -d --net=host --name ipam docker.io/port/ovn-ipam:latest /start.sh
