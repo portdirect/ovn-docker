@@ -1,5 +1,5 @@
 #!/bin/bash
-OVN_IP=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
+OVN_IP=$(ip -f inet -o addr show eth1|cut -d\  -f 7 | cut -d/ -f 1)
 docker run -d \
 --name ipam \
 -p ${OVN_IP}:9696:9696 \
