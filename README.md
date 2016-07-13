@@ -1,4 +1,5 @@
-Neoprene: an OVN based K8s/Neutron network fabric
+
+<img src="https://raw.githubusercontent.com/driftyco/ionicons/master/png/512/network.png" width="32">  Neoprene: an OVN based K8s/Neutron network fabric
 -----------------------------------------
 
 Neoprene can create a logical network between Kubernetes pods and docker containers 
