@@ -1,6 +1,10 @@
 IPAM_IP=$1 # 192.168.50.101
 LOCAL_OVS_IP=$2 #192.168.50.101
 
+ovn-integrate create-integration-bridge
+ovn-integrate set-ipam $IPAM_IP
+ovn-integrate set-tep $LOCAL_OVS_IP
+ovn-container init --bridge br-int --overlay-mode
 
 #LOCAL_OVS_IP=$(ip -f inet -o addr show eth1|cut -d\  -f 7 | cut -d/ -f 1)
 ovs-vsctl set Open_vSwitch . external_ids:ovn-remote="tcp:$IPAM_IP:6642"
