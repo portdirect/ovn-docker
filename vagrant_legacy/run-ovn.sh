@@ -1,7 +1,5 @@
 IPAM_IP=$1 # 192.168.50.101
 #LOCAL_OVS_IP=$2 #192.168.50.101
-
-IPAM_IP=$1
 LOCAL_OVS_IP=$(ip -f inet -o addr show eth1|cut -d\  -f 7 | cut -d/ -f 1)
 
 ovn-integrate create-integration-bridge
