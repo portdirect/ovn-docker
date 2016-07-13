@@ -15,5 +15,5 @@ Network for the end-user accessible Availability Zones.
 This project is heavily based on the work of shettyg (https://github.com/shettyg/ovn-docker),
 and is a fast moving target at the moment, but will aim to remain small and simple, focused on
 providing effient globaliy distributed L2 networks and DVR functionality. Eventually Keystone
-Federation, and a VPN layer (most likley either IPsec or WireGuard) will be incorporated to
-improve deployment flexibility.
+Federation, and a VPN layer - most likley either IPsec (native) or WireGuard (via plugin) will
+be incorporated to improve deployment flexibility.
