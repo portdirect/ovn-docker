@@ -140,6 +140,7 @@ exit \$?
 EOF
 chmod +x /usr/bin/wupiao
 
+OVN_IP=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 /usr/bin/wupiao ${OVN_IP}:5000
 /usr/bin/wupiao ${OVN_IP}:35357
 /usr/bin/wupiao ${OVN_IP}:9696
