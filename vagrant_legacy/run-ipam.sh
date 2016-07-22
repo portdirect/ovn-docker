@@ -75,4 +75,4 @@ docker run -d \
 -p ${OVN_IP}:8774:8774 \
 -p ${OVN_IP}:8775:8775 \
 -p ${OVN_IP}:9696:9696 \
-docker.io/port/ovn-ipam:latest tail -f /dev/null
+docker.io/port/ovn-ipam:latest /start.sh
