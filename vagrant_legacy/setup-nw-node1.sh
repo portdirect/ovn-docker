@@ -13,7 +13,7 @@ quay.io/coreos/etcd:v3.0.1 \
 --listen-client-urls 'http://localhost:2379,http://0.0.0.0:4001' \
 --advertise-client-urls "http://$NODE_IP:4001"
 
-
+/usr/bin/wupiao ${NODE_IP}:4001
 
 
 
@@ -73,6 +73,8 @@ gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 --v=2 \
 --logtostderr=true
 
+
+/usr/bin/wupiao 127.0.0.1:8080
 
 /usr/bin/docker run \
 --name kuryr-raven \
