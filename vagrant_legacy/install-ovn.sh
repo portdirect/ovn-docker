@@ -170,3 +170,7 @@ docker stop ovn-controller || true
 docker rm -v ovn-controller || true
 EOF
 chmod +x /usr/local/bin/ovn-controller-stop
+
+systemctl daemon-reload
+systemctl start ovn-controller
+systemctl enable ovn-controller
