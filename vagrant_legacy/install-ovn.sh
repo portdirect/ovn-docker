@@ -148,6 +148,9 @@ RemainAfterExit=yes
 ExecStartPre=/usr/local/bin/ovn-controller-start
 ExecStart=/usr/bin/bash -c 'echo "OVN Controller Started"'
 ExecStartStop=/usr/local/bin/ovn-controller-stop
+
+[Install]
+WantedBy=multi-user.target
 EOF
 
 cat > /usr/local/bin/ovn-controller-start << EOF
