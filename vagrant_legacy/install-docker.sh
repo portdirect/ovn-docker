@@ -1,5 +1,4 @@
-wget -qO- https://get.docker.com/ | sh
-apt-get install -q -y vim bridge-utils 
-
-echo 'DOCKER_OPTS="--bridge=docker0"' >> /etc/default/docker
-service docker restart
+#!/bin/sh
+yum install -y docker
+systemctl start docker
+systemctl enable docker
