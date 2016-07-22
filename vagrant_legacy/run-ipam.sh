@@ -68,6 +68,7 @@ OVN_IP=$(ip -f inet -o addr show eth1|cut -d\  -f 7 | cut -d/ -f 1)
 docker run -d \
 --name ipam \
 -e EXPOSED_IP=${OVN_IP} \
+-e OVN_NORTHD_IP=${OVN_IP} \
 -p ${OVN_IP}:5000:5000 \
 -p ${OVN_IP}:35357:35357 \
 -p ${OVN_IP}:8774:8774 \
