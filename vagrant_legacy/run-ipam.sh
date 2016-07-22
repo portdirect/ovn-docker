@@ -70,7 +70,7 @@ docker run -d \
 -e EXPOSED_IP=${OVN_IP} \
 -p ${OVN_IP}:5000:5000 \
 -p ${OVN_IP}:35357:35357 \
+-p ${OVN_IP}:8774:8774 \
+-p ${OVN_IP}:8775:8775 \
 -p ${OVN_IP}:9696:9696 \
--p ${OVN_IP}:6641:6641 \
--p ${OVN_IP}:6642:6642 \
 docker.io/port/ovn-ipam:latest tail -f /dev/null
