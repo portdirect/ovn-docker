@@ -1,38 +1,130 @@
-apt-get update
-apt-get install -y build-essential fakeroot debhelper \
-                    autoconf automake bzip2 libssl-dev \
-                    openssl graphviz python-all procps \
-                    python-qt4 python-zopeinterface \
-                    python-twisted-conch libtool git dh-autoreconf
+OS_DISTRO=HarborOS
+################################################################################
+echo "${OS_DISTRO}: SELINUX"
+################################################################################
+setenforce 0
+cat > /etc/selinux/config <<EOF
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+SELINUX=disabled
+# SELINUXTYPE= can take one of three two values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+EOF
+
+################################################################################
+echo "${OS_DISTRO}: DOCKER"
+################################################################################
+yum install -y docker bridge-utils
+cat > /etc/systemd/system/docker-storage-setup.service <<EOF
+[Unit]
+Description=Docker Storage Setup
+After=network.target
+Before=docker.service
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker-storage-setup
+EnvironmentFile=-/etc/sysconfig/docker-storage-setup
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl start docker
 
 
 
-git clone https://github.com/openvswitch/ovs.git
-cd ovs
-#git checkout -b ovn_local 767944131928487497579fd48
-./boot.sh
-./configure --prefix=/usr --localstatedir=/var  --sysconfdir=/etc --enable-ssl --with-linux=/lib/modules/`uname -r`/build
-make -j3
-make install
-cp debian/openvswitch-switch.init /etc/init.d/openvswitch-switch
-
-rmmod openvswitch
+################################################################################
+echo "${OS_DISTRO}: OVS_KERNEL"
+################################################################################
+docker pull port/ovs-vswitchd:latest
+docker run -d \
+--name ovs-installer \
+-v /srv \
+port/ovs-vswitchd:latest tail -f /dev/null
+OVS_RPM_DIR="$(docker inspect --format '{{ range .Mounts }}{{ if eq .Destination "/srv" }}{{ .Source }}{{ end }}{{ end }}' ovs-installer)"
+yum install -y ${OVS_RPM_DIR}/x86_64/openvswitch-kmod*.rpm
+yum install -y ${OVS_RPM_DIR}/x86_64/*.rpm ${OVS_RPM_DIR}/noarch/*.rpm
+docker stop ovs-installer
+docker rm -v ovs-installer
 modprobe libcrc32c
 modprobe nf_conntrack_ipv6
 modprobe nf_nat_ipv6
 modprobe gre
-insmod ./datapath/linux/openvswitch.ko
-insmod ./datapath/linux/vport-geneve.ko
-/etc/init.d/openvswitch-switch start
+modprobe openvswitch
+modprobe vport-geneve
+modprobe vport-vxlan
 
+################################################################################
+echo "${OS_DISTRO}: OVS_USERSPACE"
+################################################################################
 
-git clone https://github.com/portdirect/ovn-docker.git
-cd ovn-docker
-cp * /usr/local/bin/
+cat > /etc/systemd/system/openvswitch-nonetwork.service <<EOF
+[Unit]
+Description=Open vSwitch Internal Unit
+After=syslog.target docker.service
+Requires=docker.service
+PartOf=openvswitch.service
+Wants=openvswitch.service
+[Service]
+Restart=always
+RestartSec=10
+RemainAfterExit=yes
+ExecStartPre=/usr/local/bin/openvswitch-start
+ExecStart=/usr/bin/bash -c 'echo "OVS Started"'
+ExecStartStop=/usr/local/bin/openvswitch-stop
+EOF
 
-# Pulling in the world to make it run...
-apt-get install -y python-dev python-setuptools
-easy_install -U pip
-pip install oslo.utils
-# Install via PIP to get the latest version (Ubunutu is way too old)
-pip install python-neutronclient
+cat > /usr/local/bin/openvswitch-start << EOF
+#!/bin/bash
+setenforce 0
+
+modprobe libcrc32c
+modprobe nf_conntrack_ipv6
+modprobe nf_nat_ipv6
+modprobe gre
+modprobe openvswitch
+modprobe vxlan
+modprobe vport-geneve
+modprobe vport-vxlan
+
+docker stop ovs-db || true
+docker rm -v ovs-db || true
+docker run -d \
+--net=host \
+--name ovs-db \
+--restart=always \
+-v /var/run/openvswitch:/var/run/openvswitch:rw \
+-v /var/lib/ovn:/var/lib/ovn:rw \
+port/ovsdb-server-node:latest
+
+docker stop ovs-vswitchd || true
+docker rm -v ovs-vswitchd || true
+docker run -d \
+--net=host \
+--pid=host \
+--ipc=host \
+--name ovs-vswitchd \
+--privileged \
+--cap-add NET_ADMIN \
+--restart=always \
+-v /dev/net:/dev/net:rw \
+-v /var/run/netns:/var/run/netns:rw \
+-v /var/run/openvswitch:/var/run/openvswitch:rw \
+-v /var/lib/ovn:/var/lib/ovn:rw \
+port/ovs-vswitchd:latest
+
+sleep 2s
+ovs-vsctl --no-wait init
+ovs-vsctl --no-wait set open_vswitch . system-type="HarborOS"
+ovs-vsctl --no-wait set open_vswitch . external-ids:system-id="\$(hostname)"
+EOF
+chmod +x /usr/local/bin/openvswitch-start
+
+systemctl daemon-reload
+systemctl start openvswitch
+systemctl enable openvswitch
