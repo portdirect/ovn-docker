@@ -17,6 +17,22 @@ quay.io/coreos/etcd:v3.0.1 \
 
 
 
+
+/usr/bin/docker run \
+--name neutron-l3 \
+-d \
+-e MASTER_IP=${NODE_IP} \
+--restart=always \
+--volume=/:/rootfs:ro \
+--volume=/dev/net:/dev/net:rw \
+--volume=/var/run/netns:/var/run/netns:rw \
+--volume=/var/run/openvswitch:/var/run/openvswitch:rw \
+--net=host \
+--privileged=true \
+--pid=host \
+docker.io/port/ovn-l3:latest /start.sh
+
+
 /usr/bin/docker run -d --name kube-setup-files \
 --net=host \
 --volume=/data:/data \
@@ -120,20 +136,6 @@ curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_
 chmod +x /usr/bin/kubectl
 kubectl get nodes
 
-
-/usr/bin/docker run \
---name neutron-l3 \
--d \
--e MASTER_IP=${NODE_IP} \
---restart=always \
---volume=/:/rootfs:ro \
---volume=/dev/net:/dev/net:rw \
---volume=/var/run/netns:/var/run/netns:rw \
---volume=/var/run/openvswitch:/var/run/openvswitch:rw \
---net=host \
---privileged=true \
---pid=host \
-docker.io/port/ovn-l3:latest tail -f /dev/null
 
 
 
