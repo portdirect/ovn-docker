@@ -14,7 +14,7 @@ Requires=docker.service openvswitch.service
 Restart=always
 RestartSec=10
 RemainAfterExit=yes
-ExecStart=/usr/local/bin/ovn-northd-start
+ExecStartPre=/usr/local/bin/ovn-northd-start
 ExecStart=/usr/bin/bash -c 'echo "OVN Northd Started"'
 ExecStartStop=/usr/local/bin/ovn-northd-stop
 EOF
