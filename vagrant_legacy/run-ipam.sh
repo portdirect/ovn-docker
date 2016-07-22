@@ -92,6 +92,7 @@ ExecStartStop=/usr/local/bin/openstack-stop
 WantedBy=multi-user.target
 EOF
 
+
 cat > /usr/local/bin/openstack-start << EOF
 #!/bin/bash
 docker stop openstack || true
@@ -121,6 +122,7 @@ chmod +x /usr/local/bin/openstack-stop
 
 
 systemctl daemon-reload
+docker pull docker.io/port/ovn-ipam:latest
 systemctl restart openstack
 
 
