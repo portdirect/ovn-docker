@@ -161,7 +161,6 @@ docker run -d \
 --net=host \
 --name ovn-controller \
 --restart=always \
--e OVS_SB_DB_IP=10.0.0.5 \
 -v /var/run/openvswitch:/var/run/openvswitch:rw \
 port/ovn-controller:latest
 EOF
