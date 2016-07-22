@@ -96,18 +96,18 @@ cat > /usr/local/bin/openstack-start << EOF
 #!/bin/bash
 docker stop openstack || true
 docker rm -v openstack || true
-OVN_IP=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
+OVN_IP=\$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 docker run -d \
 --name openstack \
--e EXPOSED_IP=${OVN_IP} \
--e OVN_NORTHD_IP=${OVN_IP} \
--p ${OVN_IP}:80:80 \
--p ${OVN_IP}:5000:5000 \
--p ${OVN_IP}:35357:35357 \
--p ${OVN_IP}:5672:5672 \
--p ${OVN_IP}:8774:8774 \
--p ${OVN_IP}:8775:8775 \
--p ${OVN_IP}:9696:9696 \
+-e EXPOSED_IP=\${OVN_IP} \
+-e OVN_NORTHD_IP=\${OVN_IP} \
+-p \${OVN_IP}:80:80 \
+-p \${OVN_IP}:5000:5000 \
+-p \${OVN_IP}:35357:35357 \
+-p \${OVN_IP}:5672:5672 \
+-p \${OVN_IP}:8774:8774 \
+-p \${OVN_IP}:8775:8775 \
+-p \${OVN_IP}:9696:9696 \
 docker.io/port/ovn-ipam:latest /start.sh
 EOF
 chmod +x /usr/local/bin/openstack-start
