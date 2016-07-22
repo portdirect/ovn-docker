@@ -4,7 +4,8 @@ NODE_IP="$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)"
 /usr/bin/docker run -d  \
 --name etcd \
 --net host \
---volume=/var/etcd \
+--volume=/var/etcd:/var/etcd:rw \
+--restart=always \
 quay.io/coreos/etcd:v3.0.1 \
 /usr/local/bin/etcd \
 --initial-advertise-peer-urls "http://$NODE_IP:2380" \
@@ -25,7 +26,8 @@ IP:${NODE_IP},DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,D
 
 
 /usr/bin/docker run -d --name kube-apiserver --net=host \
---volume=/data:/srv/kubernetes \
+--volume=/data:/srv/kubernetes:rw \
+--restart=always \
 gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 /hyperkube apiserver \
 --service-cluster-ip-range=10.10.0.1/24 \
@@ -47,7 +49,8 @@ gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 -d \
 --name kube-controller-manager \
 --net=host \
---volume=/data:/srv/kubernetes \
+--volume=/data:/srv/kubernetes:rw \
+--restart=always \
 gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 /hyperkube controller-manager \
 --master=127.0.0.1:8080 \
@@ -62,7 +65,8 @@ gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 /usr/bin/docker run \
 -d \
 --name kube-scheduler \
---net=host \
+--net=host\
+--restart=always \
 gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 /hyperkube scheduler \
 --master=127.0.0.1:8080 \
@@ -81,18 +85,20 @@ gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 -e IDENTITY_URL=http://${NODE_IP}:35357/v2.0 \
 -e OS_URL=http://${NODE_IP}:9696 \
 -e K8S_API=http://127.0.0.1:8080 \
--v /var/log/kuryr:/var/log/kuryr \
+-v /var/log/kuryr:/var/log/kuryr:rw \
+--restart=always \
 docker.io/port/system-raven:latest
 
 
 /usr/bin/docker run \
 --name kubelet \
 -d \
--e MASTER_IP=${NODE_IP}\
+-e MASTER_IP=${NODE_IP} :rw \
+--restart=always\
 --volume=/:/rootfs:ro \
--v /dev/net:/dev/net:rw \
--v /var/run/netns:/var/run/netns:rw \
--v /var/run/openvswitch:/var/run/openvswitch:rw \
+--volume=/dev/net:/dev/net:rw \
+--volume=/var/run/netns:/var/run/netns:rw \
+--volume=/var/run/openvswitch:/var/run/openvswitch:rw \
 --volume=/sys:/sys:ro \
 --volume=/var/lib/docker/:/var/lib/docker:rw \
 --volume=/var/lib/kubelet/:/var/lib/kubelet:rw \
