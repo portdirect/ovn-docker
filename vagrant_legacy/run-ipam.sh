@@ -17,6 +17,9 @@ RemainAfterExit=yes
 ExecStartPre=/usr/local/bin/ovn-northd-start
 ExecStart=/usr/bin/bash -c 'echo "OVN Northd Started"'
 ExecStartStop=/usr/local/bin/ovn-northd-stop
+
+[Install]
+WantedBy=multi-user.target
 EOF
 
 cat > /usr/local/bin/ovn-northd-start << EOF
@@ -64,9 +67,38 @@ systemctl restart ovn-northd
 
 
 
+
+
+
+################################################################################
+echo "${OS_DISTRO}: OPENSTACK"
+################################################################################
+
+cat > /etc/systemd/system/openstack.service <<EOF
+[Unit]
+Description=Openstack
+After=syslog.target docker.service
+Requires=docker.service openvswitch.service
+
+[Service]
+Restart=always
+RestartSec=10
+RemainAfterExit=yes
+ExecStartPre=/usr/local/bin/openstack-start
+ExecStart=/usr/bin/bash -c 'echo "Openstack Started"'
+ExecStartStop=/usr/local/bin/openstack-stop
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > /usr/local/bin/openstack-start << EOF
+#!/bin/bash
+docker stop openstack || true
+docker rm -v openstack || true
 OVN_IP=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 docker run -d \
---name ipam \
+--name openstack \
 -e EXPOSED_IP=${OVN_IP} \
 -e OVN_NORTHD_IP=${OVN_IP} \
 -p ${OVN_IP}:80:80 \
@@ -77,6 +109,22 @@ docker run -d \
 -p ${OVN_IP}:8775:8775 \
 -p ${OVN_IP}:9696:9696 \
 docker.io/port/ovn-ipam:latest /start.sh
+EOF
+chmod +x /usr/local/bin/openstack-start
+
+cat > /usr/local/bin/openstack-stop << EOF
+#!/bin/bash
+docker stop openstack || true
+docker rm -v openstack || true
+EOF
+chmod +x /usr/local/bin/openstack-stop
+
+
+systemctl daemon-reload
+systemctl restart openstack
+
+
+
 
 
 cat > /usr/bin/wupiao <<EOF
