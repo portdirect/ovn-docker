@@ -65,7 +65,7 @@ gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 /usr/bin/docker run \
 -d \
 --name kube-scheduler \
---net=host\
+--net=host \
 --restart=always \
 gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 /hyperkube scheduler \
