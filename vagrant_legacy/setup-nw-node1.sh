@@ -106,8 +106,19 @@ docker.io/port/system-kubelet:latest /kubelet
 
 
 
+KUBE_LATEST_VERSION="v1.3.0"
+mkdir -p /usr/bin
+curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl > /usr/bin/kubectl
+chmod +x /usr/bin/kubectl
+kubectl get nodes
+
+
+
+
+
+
 
 #ovn-container net-create ls0 192.168.1.0/24
 #ovn-container endpoint-create ls0 ls0p1
 #NETWORK_CONTAINER=$(ovn-container container-create --network=ls0p1)
-docker run -d --net=container:$NETWORK_CONTAINER --name networktest port/base:latest tail -f /dev/null
+#docker run -d --net=container:$NETWORK_CONTAINER --name networktest port/base:latest tail -f /dev/null
