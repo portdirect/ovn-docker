@@ -13,7 +13,7 @@ quay.io/coreos/etcd:v3.0.1 \
 --listen-client-urls 'http://localhost:2379,http://0.0.0.0:4001' \
 --advertise-client-urls "http://$NODE_IP:4001"
 
-/usr/bin/wupiao ${NODE_IP}:4001
+/usr/bin/wupiao ${NODE_IP}:4001/v2/keys
 
 
 
