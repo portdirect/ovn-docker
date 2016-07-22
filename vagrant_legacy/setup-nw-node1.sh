@@ -93,7 +93,7 @@ docker.io/port/system-raven:latest
 /usr/bin/docker run \
 --name kubelet \
 -d \
--e MASTER_IP=${NODE_IP}\
+-e MASTER_IP=${NODE_IP} \
 --restart=always \
 --volume=/:/rootfs:ro \
 --volume=/dev/net:/dev/net:rw \
