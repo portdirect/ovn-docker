@@ -59,6 +59,11 @@ EOF
 chmod +x /usr/local/bin/ovn-northd-stop
 
 
+systemctl daemon-reload
+systemctl restart ovn-northd
+
+
+
 OVN_IP=$(ip -f inet -o addr show eth1|cut -d\  -f 7 | cut -d/ -f 1)
 docker run -d \
 --name ipam \
