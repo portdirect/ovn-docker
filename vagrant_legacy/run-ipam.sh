@@ -76,3 +76,19 @@ docker run -d \
 -p ${OVN_IP}:8775:8775 \
 -p ${OVN_IP}:9696:9696 \
 docker.io/port/ovn-ipam:latest /start.sh
+
+
+cat > /usr/bin/wupiao <<EOF
+#!/bin/bash
+# [w]ait [u]ntil [p]ort [i]s [a]ctually [o]pen
+[ -n "\$1" ] && \
+    until curl -o /dev/null -sIf http://\${1}; do \
+    sleep 1 && echo .;
+  done;
+exit \$?
+EOF
+chmod +x /usr/bin/wupiao
+
+/usr/bin/wupiao ${OVN_IP}:5000
+/usr/bin/wupiao ${OVN_IP}:35357
+/usr/bin/wupiao ${OVN_IP}:9696
