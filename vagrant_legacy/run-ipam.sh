@@ -64,7 +64,7 @@ systemctl restart ovn-northd
 
 
 
-OVN_IP=$(ip -f inet -o addr show eth1|cut -d\  -f 7 | cut -d/ -f 1)
+OVN_IP=$(ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1)
 docker run -d \
 --name ipam \
 -e EXPOSED_IP=${OVN_IP} \
