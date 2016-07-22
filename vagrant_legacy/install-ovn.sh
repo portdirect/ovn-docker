@@ -129,3 +129,43 @@ chmod +x /usr/local/bin/openvswitch-start
 systemctl daemon-reload
 systemctl start openvswitch
 systemctl enable openvswitch
+
+
+################################################################################
+echo "${OS_DISTRO}: OVN_NODE"
+################################################################################
+
+cat > /etc/systemd/system/ovn-controller.service <<EOF
+[Unit]
+Description=Open vSwitch Internal Unit
+After=syslog.target docker.service
+Requires=docker.service openvswitch.service
+
+[Service]
+Restart=always
+RestartSec=10
+RemainAfterExit=yes
+ExecStartPre=/usr/local/bin/ovn-controller-start
+ExecStart=/usr/bin/bash -c 'echo "OVN Controller Started"'
+ExecStartStop=/usr/local/bin/ovn-controller-stop
+EOF
+
+cat > /usr/local/bin/ovn-controller-start << EOF
+#!/bin/bash
+docker stop ovn-controller || true
+docker rm -v ovn-controller || true
+docker run -d \
+--net=host \
+--name ovn-controller \
+--restart=always \
+-v /var/run/openvswitch:/var/run/openvswitch:rw \
+port/ovn-controller:latest
+EOF
+chmod +x /usr/local/bin/ovn-controller-start
+
+cat > /usr/local/bin/ovn-controller-stop << EOF
+#!/bin/bash
+docker stop ovn-controller || true
+docker rm -v ovn-controller || true
+EOF
+chmod +x /usr/local/bin/ovn-controller-stop
