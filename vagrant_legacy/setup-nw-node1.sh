@@ -16,6 +16,13 @@ quay.io/coreos/etcd:v3.0.1 \
 /usr/bin/wupiao ${NODE_IP}:4001/v2/keys
 
 
+EXTERNAL_BRIDGE=br-ex
+ovs-vsctl --no-wait -- --may-exist add-br ${EXTERNAL_BRIDGE}
+ip addr add 203.0.113.1/24 dev ${EXTERNAL_BRIDGE}
+ip link set up ${EXTERNAL_BRIDGE}
+
+#iptables -t nat -A POSTROUTING -o ${EXTERNAL_BRIDGE} -j MASQUERADE
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 
 /usr/bin/docker run \
