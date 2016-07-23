@@ -23,8 +23,7 @@ quay.io/coreos/etcd:v3.0.1 \
 -d \
 -e MASTER_IP=${NODE_IP} \
 --restart=always \
---volume=/:/rootfs:ro \
---volume=/dev/net:/dev/net:rw \
+--volume=/lib/modules:/lib/modules:ro \
 --volume=/var/run/netns:/var/run/netns:rw \
 --volume=/var/run/openvswitch:/var/run/openvswitch:rw \
 --net=host \
