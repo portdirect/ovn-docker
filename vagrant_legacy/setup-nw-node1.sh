@@ -33,6 +33,23 @@ quay.io/coreos/etcd:v3.0.1 \
 docker.io/port/ovn-l3:latest /start.sh
 
 
+/usr/bin/docker run \
+--name neutron-lbaas \
+-d \
+-e MASTER_IP=${NODE_IP} \
+--restart=always \
+--volume=/sys:/sys:ro \
+--volume=/lib/modules:/lib/modules:ro \
+--volume=/var/run/netns:/var/run/netns:rw \
+--volume=/var/run/openvswitch:/var/run/openvswitch:rw \
+--net=host \
+--privileged=true \
+--pid=host \
+docker.io/port/ovn-lbaas:latest /start.sh
+
+
+
+
 /usr/bin/docker run -d --name kube-setup-files \
 --net=host \
 --volume=/data:/data \
