@@ -109,20 +109,23 @@ gcr.io/google_containers/hyperkube-amd64:v1.3.0 \
 
 /usr/bin/wupiao 127.0.0.1:8080
 
-#/usr/bin/docker run \
-#--name kuryr-raven \
-#--net=host \
-#-d \
-#-e SERVICE_CLUSTER_IP_RANGE=10.10.0.1/24 \
-#-e SERVICE_USER=admin \
-#-e SERVICE_TENANT_NAME=admin \
-#-e SERVICE_PASSWORD=password \
-#-e IDENTITY_URL=http://${NODE_IP}:35357/v2.0 \
-#-e OS_URL=http://${NODE_IP}:9696 \
-#-e K8S_API=http://127.0.0.1:8080 \
-#-v /var/log/kuryr:/var/log/kuryr:rw \
-#--restart=always \
-#docker.io/port/system-raven:latest
+
+
+/usr/bin/docker run \
+--name kuryr-raven \
+--net=host \
+-d \
+-e SERVICE_CLUSTER_IP_RANGE=10.10.0.1/24 \
+-e SERVICE_USER=admin \
+-e SERVICE_TENANT_NAME=admin \
+-e SERVICE_PASSWORD=password \
+-e IDENTITY_URL=http://${NODE_IP}:35357/v2.0 \
+-e OS_URL=http://${NODE_IP}:9696 \
+-e K8S_API=http://127.0.0.1:8080 \
+-v /var/log/kuryr:/var/log/kuryr:rw \
+--restart=always \
+docker.io/port/system-raven:latest
+
 
 
 /usr/bin/docker run \
